@@ -1,7 +1,5 @@
-.idea
-.classpath
-.project
-*.iml
-target/
-.DS_Store
-.gitattributes
+/.settings/
+/logs/
+/.project
+/.springBeans
+/xxl-job/
