@@ -145,6 +145,81 @@
 			<version>${project.parent.version}</version>
 		</dependency>
 
+		<!--  linesno training config  -->
+		<dependency>
+			<groupId>com.linesno.training.common</groupId>
+			<artifactId>training-common-config</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+		
 	</dependencies>
+
+	<build>
+		<plugins>
+
+			<!-- docker web 插件 -->
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<configuration>
+					<verbose>true</verbose>
+					<serverId>docker-aliyun</serverId>
+					<registryUrl>${docker.repostory}</registryUrl>
+					<forceCreation>false</forceCreation>
+					<pushImage>false</pushImage>
+
+					<dockerInfoDirectory>${project.basedir}</dockerInfoDirectory>
+					<workdir>/ROOT</workdir>
+					<baseImage>tomcat:8.5</baseImage>
+					<entryPoint>["catalina.sh", "run"]</entryPoint>
+					<runs>
+						<run>rm -rf /usr/local/tomcat/webapps/*</run>
+						<run>mv /ROOT/${project.build.finalName}.war /usr/local/tomcat/webapps/ROOT.war</run>
+					</runs> 
+					<imageName>${docker.repostory}/${docker.registry.name}/${project.artifactId}:${project.version}</imageName>
+
+					<forceTags>true</forceTags>
+					<imageTags>
+						<imageTag>${project.version}</imageTag>
+						<imageTag>latest</imageTag>
+					</imageTags>
+ 
+					<resources>
+						<resource>
+							<targetPath>/ROOT</targetPath>
+							<directory>/${project.build.directory}</directory>
+							<include>${project.build.finalName}.war</include>
+						</resource>
+					</resources>
+					
+				</configuration>
+			</plugin>
+			
+			<!-- web run plugin -->
+			<plugin>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<configuration>
+					<stopKey>shutdown</stopKey>
+					<stopPort>9966</stopPort>
+					<scanIntervalSeconds>5</scanIntervalSeconds>
+					<reload>manual</reload>
+					<httpConnector>
+						<port>8080</port>
+					</httpConnector>
+					<dumpOnStart>false</dumpOnStart>
+					<webApp>
+						<contextPath>/${project.artifactId}</contextPath>
+					</webApp>
+					<init-param>
+						<param-name>useFileMappedBuffer</param-name>
+						<param-value>false</param-value>
+					</init-param>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+
 
 </project>

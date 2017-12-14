@@ -14,11 +14,17 @@
 		<module>xxl-job-core</module>
 		<module>xxl-job-admin</module>
 		<module>xxl-job-executor-samples</module>
-    </modules>
+	</modules>
 
 	<properties>
 		<javax.servlet-api.version>3.0.1</javax.servlet-api.version>
 		<jsp-api.version>2.2</jsp-api.version>
+		<nexus.repository>http://nexus.linesno.com/nexus</nexus.repository>
+
+		<!-- docker registry -->
+		<docker.repostory>registry-internal.cn-hangzhou.aliyuncs.com</docker.repostory>
+		<docker.registry.name>dev-training</docker.registry.name>
+		<docker.maven.plugin.version>1.0.0</docker.maven.plugin.version>
 
 		<spring.version>3.2.18.RELEASE</spring.version>
 		<jackson-mapper-asl.version>1.9.13</jackson-mapper-asl.version>
@@ -49,13 +55,20 @@
 
 	<build>
 		<plugins>
+			<!-- docker web 插件 -->
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>1.0.0</version>
+			</plugin>
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.8</source>
+					<target>1.8</target>
 					<encoding>UTF8</encoding>
 				</configuration>
 			</plugin>
@@ -78,6 +91,19 @@
 		</plugins>
 	</build>
 
+	<distributionManagement>
+		<repository>
+			<id>releases</id>
+			<name>Nexus Release Repository</name>
+			<url>${nexus.repository}/content/repositories/releases/</url>
+		</repository>
+
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>Nexus Snapshot Repository</name>
+			<url>${nexus.repository}/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 	<licenses>
 		<license>
@@ -95,9 +121,9 @@
 	<developers>
 		<developer>
 			<id>XXL</id>
-			<name>xuxueli</name>
-			<email>931591021@qq.com</email>
-			<url>https://github.com/xuxueli</url>
+			<name>LuoAnDong</name>
+			<email>luoandon@gmail.com</email>
+			<url>http://switch.linesno.com</url>
 		</developer>
 	</developers>
 
@@ -107,6 +133,8 @@
 			<id>release</id>
 			<build>
 				<plugins>
+
+
 					<!-- Source -->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
@@ -136,34 +164,24 @@
 						</executions>
 					</plugin>
 					<!-- GPG -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.6</version>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.6</version>
 						<configuration>
 							<useAgent>false</useAgent>
 						</configuration>
-                        <executions>
-                            <execution>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
+						<executions>
+							<execution>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
 				</plugins>
 			</build>
-			<distributionManagement>
-				<snapshotRepository>
-					<id>oss</id>
-					<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-				</snapshotRepository>
-				<repository>
-					<id>oss</id>
-					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-				</repository>
-			</distributionManagement>
 		</profile>
 	</profiles>
 
