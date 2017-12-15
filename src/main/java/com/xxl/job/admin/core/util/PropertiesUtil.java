@@ -16,7 +16,7 @@ import java.util.Properties;
  */
 public class PropertiesUtil {
 	private static Logger logger = LoggerFactory.getLogger(PropertiesUtil.class);
-	private static final String file_name = "xxl-job-admin.properties";
+	private static final String file_name = "application.properties";
 
 
 	public static String getString(String key) {
